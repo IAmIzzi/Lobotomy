@@ -10,7 +10,7 @@ video {
   transform: translate(-50%, -50%);
   position: absolute;
   top: 45%;
-  left: 47%;
+  left: 45%;
   bottom: 130%;
   width: auto;
   height: calc(.5000 * 80vw);
