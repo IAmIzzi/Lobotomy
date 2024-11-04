@@ -20,6 +20,11 @@ video {
   margin: 50px;
 }
 
+button{
+  background-color:lightsteelblue;
+
+}
+
 .bg {
   /* The image used */
   background-image: url("grain2.jpg");
