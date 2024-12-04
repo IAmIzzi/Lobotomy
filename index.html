@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Lobotomy Appointment</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('head.png'); /* Set the background image */
+      background-position: center; /* Center the image */
+      background-repeat: no-repeat; /* Ensure it doesn't repeat */
+      background-size: auto; /* Make sure the image covers the entire background */
+      background-color: black;
+    }
+    #video-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #image-container { 
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    #image-container img:active {
+      cursor: grabbing;
+      transform: scale(1.1);
+    }
+
+    video {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 45%;
+      left: 45%;
+      width: auto;
+      height: calc(.5000 * 80vw);
+      border: 10px #8c8c8c outset;
+      margin: 50px;
+    }
+    .fade-out {
+      animation: fadeOut 3s forwards;
+    }
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+    img {
+      position: absolute;
+      width: 300px;
+      height: auto;
+      cursor: grab;
+      transition: transform 0.2s ease;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div id="video-container">
+    <video id="video" controls>
+      <source src="Comp 1.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div id="image-container" style="display: none;">
+    <img src="https://i.imgur.com/wV41szr.png" class="image" style="top: 30%; left: 40%;" data-sound="beep-01a.mp3">
+    <img src="https://i.imgur.com/AzATcTT.png" class="image" style="top: 50%; left: 30%;" data-sound="beep-02.mp3">
+    <img src="https://www.ink-merch.com/cdn/shop/files/0122IceNineKillsWebMocksIcePick1a_4269e888-32de-40d0-9658-a06f6450d2a9.png?v=1687283647&width=1080" class="image" style="top: 50%; left: 50%;" data-sound="beep-05.mp3">
+  </div>
+
+  <!-- Background Music -->
+  <audio id="background-music" loop>
+    <source src="videoplayback.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const video = document.getElementById('video');
+    const videoContainer = document.getElementById('video-container');
+    const imageContainer = document.getElementById('image-container');
+    const backgroundMusic = document.getElementById('background-music');
+    const backgroundImages = [
+      'https://i.pinimg.com/originals/53/86/46/538646b3c5b2f40a80f929d658712b4b.gif',
+      'ao oni 2.jpg',
+      'https://i.pinimg.com/736x/65/ca/d2/65cad208987a863405da0de590977ba5.jpg',
+      'https://i.pinimg.com/736x/6c/8c/74/6c8c74a2483054b649d6179f45cfb3f0.jpg',
+      'https://i.pinimg.com/originals/fd/1c/89/fd1c89cc63493cf4662d972785440a3c.gif',
+      'https://i.pinimg.com/736x/87/71/40/8771403ffadd02c8991d9f0f6f955ac9.jpg',
+      'https://i.pinimg.com/originals/2b/87/8f/2b878fc08878b8673b9a942a8f5fac55.gif',
+      'https://i.ytimg.com/vi/uffN7Qx_DkM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCEVDugc3Cw2n_7EjxYzLs0ytPAGw',
+    ];
+
+    // Save the original background and its properties
+    const originalBackground = document.body.style.backgroundImage;
+    const originalBackgroundSize = document.body.style.backgroundSize;
+
+    // Fade out video, show images, and play background music
+    video.addEventListener('ended', () => {
+      video.classList.add('fade-out');
+      setTimeout(() => {
+        videoContainer.style.display = 'none';
+        imageContainer.style.display = 'block';
+        backgroundMusic.play(); // Start music
+      }, 3000); // Match the fadeOut animation duration
+    });
+
+    // Make images draggable and add sound and background effect
+    const makeDraggable = (image) => {
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      const sound = new Audio(image.getAttribute('data-sound'));
+
+      image.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - image.offsetLeft;
+        offsetY = e.clientY - image.offsetTop;
+        image.style.cursor = 'grabbing';
+        sound.play(); // Play sound on drag start
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          image.style.left = `${e.clientX - offsetX}px`;
+          image.style.top = `${e.clientY - offsetY}px`;
+
+          // Flash the background with random image
+          const randomBg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+          document.body.style.backgroundImage = `url('${randomBg}')`;
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundRepeat = 'no-repeat';
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        image.style.cursor = 'grab';
+        // Reset background after dragging stops, restore original background
+        document.body.style.backgroundImage = originalBackground;
+      });
+    };
+
+    const images = document.querySelectorAll('#image-container img');
+    images.forEach(makeDraggable);
+
+  </script>
+</body>
+</html>
